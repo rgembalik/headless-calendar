@@ -7,9 +7,9 @@ const renderers = {
     <div className="month-container">{weekStarts.map(renderers.monthWeek)}</div>
   ),
   monthWeek: (weekStart) => (
-    <CalendarWeek currentDate={weekStart}>
+    <CalendarWeek key={weekStart.unix()} currentDate={weekStart}>
       {(days) => (
-        <div key={weekStart.unix()} className="month-week">
+        <div className="month-week">
           <div className="month-week-number">{weekStart.week()}.</div>
           {days.map(renderers.monthDay)}
         </div>
