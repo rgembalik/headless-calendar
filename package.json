@@ -6,11 +6,10 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/headless-calendar-react"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/react.git",
-    "directory": "packages/headless-calendar-react"
+    "url": "https://github.com/rgembalik/headless-calendar.git"
   }
 }

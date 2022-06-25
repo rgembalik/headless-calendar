@@ -16,7 +16,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, "src/lib/index.tsx"),
       name: "HeadlessCalendar",
       formats: ["es", "umd"],
-      fileName: (format) => `headless-calendar-react.${format}.js`,
+      fileName: (format) => `index.${format}.js`,
     },
     rollupOptions: {
       external: ["react", "react-dom", "moment", "loadsh"],
