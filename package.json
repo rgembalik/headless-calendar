@@ -1,0 +1,11 @@
+{
+  "name": "headless-calendar",
+  "version": "0.0.1",
+  "description": "A headless wrapper for calendar views",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
