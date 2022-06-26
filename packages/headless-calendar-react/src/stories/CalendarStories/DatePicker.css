@@ -22,7 +22,7 @@ body {
 
 .datepicker time {
   display: inline-block;
-  margin: 1em;
+  margin-inline: 1em;
 }
 
 .datepicker .month-week-day,
@@ -50,7 +50,8 @@ body {
 }
 
 .datepicker .month-week-day--current-day {
-  color: #57ce6b;
+  background-color: rgb(232, 243, 232);
+  color: darkgreen;
 }
 
 .datepicker .month-week-day--selected {

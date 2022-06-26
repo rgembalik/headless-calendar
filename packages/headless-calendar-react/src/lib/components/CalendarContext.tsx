@@ -6,7 +6,7 @@ export enum CalendarMode {
   DAY = "day",
 }
 
-export interface ContextState {
+export interface CalendarContextData {
   currentDate: Date;
   mode: CalendarMode;
   setCurrentDate: (date: Date) => void;
@@ -14,4 +14,4 @@ export interface ContextState {
   prev: () => void;
 }
 
-export const CalendarContext = createContext({} as {} as ContextState);
+export const CalendarContext = createContext({} as {} as CalendarContextData);

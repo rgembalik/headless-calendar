@@ -1,10 +1,9 @@
-import { Moment } from "moment";
 import { useContext } from "react";
-import { CalendarMonth } from "..";
 import { CalendarMode, CalendarContext } from "./CalendarContext";
+import { WeekData, CalendarMonth } from "./CalendarMonth";
 
 export interface CalendarMonthModeProps {
-  children: (weekStarts: Moment[]) => React.ReactNode;
+  children: (weeks: WeekData[]) => React.ReactNode;
 }
 
 function CalendarMonthMode({ children }: CalendarMonthModeProps) {
