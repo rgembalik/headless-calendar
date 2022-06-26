@@ -35,7 +35,7 @@ module.exports = {
     return {
       react: {
         title: "React",
-        url: "https://rgembalik.github.io/headless-calendar/react/",
+        url: "/headless-calendar/react/",
       },
     };
   },
