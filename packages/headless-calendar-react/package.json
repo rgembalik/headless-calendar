@@ -1,11 +1,11 @@
 {
   "name": "@headless-calendar/react",
   "private": false,
-  "version": "0.0.4",
+  "version": "0.0.7",
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "rimraf dist && tsc && vite build",
     "preview": "vite preview",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
