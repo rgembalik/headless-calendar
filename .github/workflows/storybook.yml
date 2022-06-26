@@ -14,12 +14,14 @@ jobs:
 
       - name: Install deps and Build Storybook 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
         run: |
-          cd packages/headless-calendar-react
           yarn
           PUBLIC_URI=/headless-calendar/ yarn build-storybook
+          cd packages/headless-calendar-react
+          PUBLIC_URI=/headless-calendar/react/ yarn build-storybook
+          mv packages/headless-calendar-react/storybook-static storybook-static/react
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.3.4
         with:
-          folder: packages/headless-calendar-react/storybook-static # The folder the action should deploy.
+          folder: storybook-static # The folder the action should deploy.
           clean: true
