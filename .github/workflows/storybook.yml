@@ -19,8 +19,6 @@ jobs:
           PUBLIC_URI=/headless-calendar/react/ yarn build-storybook
           popd
 
-          npx sb extract packages/headless-calendar-react/storybook-static
-
           yarn
           PUBLIC_URI=/headless-calendar/ yarn build-storybook
 
