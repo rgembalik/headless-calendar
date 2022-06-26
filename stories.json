@@ -1,1 +1,1 @@
-{"v":3,"stories":{"introduction--page":{"id":"introduction--page","title":"Introduction","name":"Page","importPath":"./stories/Introduction.stories.mdx"}}}
+{"v":3,"stories":{"introduction--introduction":{"id":"introduction--introduction","title":"Introduction","name":"Introduction","importPath":"./stories/Introduction.stories.jsx"}}}
