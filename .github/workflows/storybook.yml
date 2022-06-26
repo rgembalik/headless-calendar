@@ -22,7 +22,3 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4.3.4
         with:
           folder: packages/headless-calendar-react/storybook-static # The folder the action should deploy.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # BASE_BRANCH: master
-          # BRANCH: gh-pages
-          # FOLDER: dist/spa
