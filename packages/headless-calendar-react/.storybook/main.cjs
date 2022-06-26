@@ -12,4 +12,12 @@ module.exports = {
   features: {
     storyStoreV7: true,
   },
+  viteFinal: (config, { configType }) => {
+    // some configs
+    if (process.env.PUBLIC_URI) {
+      config.base = process.env.PUBLIC_URI;
+    }
+
+    return config;
+  },
 };

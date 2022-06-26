@@ -16,7 +16,7 @@ jobs:
         run: |
           cd packages/headless-calendar-react
           yarn
-          yarn build-storybook
+          PUBLIC_URI=/headless-calendar/ yarn build-storybook
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.3.4
