@@ -11,5 +11,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/rgembalik/headless-calendar.git"
+  },
+  "scripts": {
+    "version:react": "yarn workspace @headless-calendar/react version --no-git-tag-version",
+    "build:react": "yarn workspace @headless-calendar/react build",
+    "publish:react": "npm publish -w @headless-calendar/react --access public"
   }
 }
