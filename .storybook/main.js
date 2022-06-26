@@ -30,6 +30,10 @@ module.exports = {
           title: "React",
           url: "http://localhost:6016",
         },
+        // vue: {
+        //   title: "Vue",
+        //   url: "http://localhost:6026",
+        // },
       };
     }
     return {
@@ -37,6 +41,10 @@ module.exports = {
         title: "React",
         url: "/headless-calendar/react/",
       },
+      // vue: {
+      //   title: "Vue",
+      //   url: "/headless-calendar/vue/",
+      // },
     };
   },
 };
