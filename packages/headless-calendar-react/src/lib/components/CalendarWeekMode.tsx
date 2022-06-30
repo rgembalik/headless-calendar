@@ -1,19 +1,35 @@
+import { Moment } from "moment";
 import { useContext } from "react";
 import { CalendarMode, CalendarContext } from "./CalendarContext";
-import { Moment } from "moment";
-import { CalendarWeek } from "./CalendarWeek";
+import { CalendarWeek, DayData } from "./CalendarWeek";
 
 export interface CalendarWeekModeProps {
-  children?: (days: Moment[]) => React.ReactNode;
+  children?: (
+    days: DayData[],
+    timeToPosition: (time: string | Date | Moment) => number
+  ) => React.ReactNode;
+  startHour?: number;
+  endHour?: number;
 }
 
-function CalendarWeekMode({ children }: CalendarWeekModeProps) {
-  const { mode, currentDate } = useContext(CalendarContext);
+function CalendarWeekMode({
+  children,
+  startHour = 0,
+  endHour = 24,
+}: CalendarWeekModeProps) {
+  const { mode, currentDate, events } = useContext(CalendarContext);
 
   return (
     <>
       {mode === CalendarMode.WEEK ? (
-        <CalendarWeek currentDate={currentDate}>{children}</CalendarWeek>
+        <CalendarWeek
+          currentDate={currentDate}
+          events={events}
+          startHour={startHour}
+          endHour={endHour}
+        >
+          {children}
+        </CalendarWeek>
       ) : null}
     </>
   );

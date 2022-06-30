@@ -1,7 +1,11 @@
 import { isFunction } from "lodash";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
-import { CalendarContext, CalendarMode } from "./CalendarContext";
+import {
+  CalendarContext,
+  CalendarEvent,
+  CalendarMode,
+} from "./CalendarContext";
 
 import { CalendarMonthMode } from "./CalendarMonthMode";
 import { CalendarWeekMode } from "./CalendarWeekMode";
@@ -9,12 +13,14 @@ import { CalendarWeekMode } from "./CalendarWeekMode";
 interface CalendarProps {
   children: React.ReactNode | ((calendarState: any) => React.ReactNode);
   mode?: CalendarMode;
+  events?: CalendarEvent[];
 }
 
-function Calendar({ children, mode }: CalendarProps) {
+function Calendar({ children, mode, events }: CalendarProps) {
   const [calendarState, setCalendarState] = useState({
     currentDate: new Date(),
     mode: mode ?? CalendarMode.MONTH,
+    events,
   });
 
   useEffect(() => {

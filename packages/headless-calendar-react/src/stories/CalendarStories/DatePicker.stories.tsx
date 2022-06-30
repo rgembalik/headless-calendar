@@ -7,6 +7,7 @@ import {
   CalendarWeek,
   WeekData,
 } from "../../lib";
+import { DayData } from "../../lib/components/CalendarWeek";
 import "./DatePicker.css";
 
 export const DatePicker = () => {
@@ -32,12 +33,12 @@ export const DatePicker = () => {
                   currentDate={weeks[0].start}
                 >
                   {(days) =>
-                    days.map((day: Moment) => (
+                    days.map((day: DayData) => (
                       <div
                         className="month-week-day month-week-day--header"
-                        key={day.unix()}
+                        key={day.date.unix()}
                       >
-                        {day.format("dd")}
+                        {day.date.format("dd")}
                       </div>
                     ))
                   }
@@ -48,21 +49,21 @@ export const DatePicker = () => {
                     currentDate={week.start}
                   >
                     {(days) =>
-                      days.map((day: Moment) => (
+                      days.map((day: DayData) => (
                         <button
                           className={[
                             "month-week-day",
-                            day.isSame(date, "day") &&
+                            day.date.isSame(date, "day") &&
                               "month-week-day--selected",
-                            !day.isSame(currentDate, "month") &&
+                            !day.date.isSame(currentDate, "month") &&
                               "month-week-day--other-month",
-                            day.isSame(moment(), "day") &&
+                            day.date.isSame(moment(), "day") &&
                               "month-week-day--current-day",
                           ].join(" ")}
-                          key={day.unix()}
-                          onClick={() => setDate(day.toDate())}
+                          key={day.date.unix()}
+                          onClick={() => setDate(day.date.toDate())}
                         >
-                          {day.format("D")}
+                          {day.date.format("D")}
                         </button>
                       ))
                     }

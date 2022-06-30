@@ -1,4 +1,5 @@
-import moment, { Moment } from "moment";
+import moment from "moment";
+import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { useMemo, useState } from "react";
 import {
   Calendar,
@@ -7,10 +8,35 @@ import {
   CalendarWeek,
   WeekData,
 } from "../../lib";
+import { CalendarEvent } from "../../lib/components/CalendarContext";
+import { DayData } from "../../lib/components/CalendarWeek";
 import "./CalendarView.css";
+import { CalendarWeekMode } from "../../lib/components/CalendarWeekMode";
 
-export const CalendarView = () => {
-  const [mode, setMode] = useState(CalendarMode.MONTH);
+const events: CalendarEvent[] = [
+  {
+    start: moment().hour(9).startOf("hour"),
+    end: moment().hour(10).startOf("hour"),
+    title: "Event now",
+  },
+  {
+    start: moment().hour(13).startOf("hour"),
+    end: moment().hour(15).startOf("hour"),
+    title: "Event now2",
+    color: "darkgreen",
+  },
+  {
+    start: moment().subtract(1, "days").hour(9).minute(30),
+    end: moment().subtract(1, "days").hour(10).endOf("hour"),
+    title: "Event yesterday",
+  },
+];
+
+const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
+  args
+) => {
+  const [mode, setMode] = useState(CalendarMode.WEEK);
+  const { startHour = 0, endHour = 24 } = args;
   const availableModes = useMemo(
     () =>
       [CalendarMode.MONTH, CalendarMode.WEEK].filter(
@@ -19,7 +45,7 @@ export const CalendarView = () => {
     [mode]
   );
   return (
-    <Calendar mode={mode}>
+    <Calendar mode={mode} events={events}>
       {({ prev, next, currentDate, setCurrentDate }: CalendarContextData) => (
         <div className="calendar-view">
           <p>
@@ -38,14 +64,68 @@ export const CalendarView = () => {
             />
             <button onClick={next}>→</button>
           </p>
-          <Calendar.WeekMode>
-            {(days: Moment[]) => (
+          <Calendar.WeekMode startHour={startHour} endHour={endHour}>
+            {(days: DayData[], timeToPosition) => (
               <div className="week-container">
-                {days.map((date: Moment) => (
-                  <div className="week-day" key={date.unix()}>
+                <div
+                  className="week-day-lines"
+                  style={{
+                    gridColumn: `1 / 9`,
+                    gridRow: `1`,
+                  }}
+                >
+                  <div className="week-day-header"></div>
+                  {Array(Math.max(0, endHour - startHour))
+                    .fill(0)
+                    .map((_, idx) => (
+                      <div
+                        key={startHour + idx}
+                        className="week-hour-marker"
+                        style={{
+                          height: `calc( ( 100% - 3em ) / ${
+                            endHour - startHour
+                          })`,
+                        }}
+                      >
+                        {moment()
+                          .hour(startHour + idx)
+                          .format("ha")}
+                      </div>
+                    ))}
+                </div>
+
+                {days.map((day: DayData, idx) => (
+                  <div
+                    className="week-day"
+                    key={day.date.unix()}
+                    style={{ gridColumn: `${idx + 2}` }}
+                  >
                     <div className="week-day-header">
-                      <div>{date.format("dddd")}</div>
-                      <div>{date.format("ll")}</div>
+                      <div>{day.date.format("dddd")}</div>
+                      <div>{day.date.format("ll")}</div>
+                    </div>
+                    <div className="week-day-event-container">
+                      {day.events?.map((event) => (
+                        <div
+                          className="week-day-event"
+                          style={{
+                            backgroundColor: event.color,
+                            top: `${timeToPosition(event.start) * 100}%`,
+                            height: `${
+                              !event.end
+                                ? "auto"
+                                : (timeToPosition(event.end) -
+                                    timeToPosition(event.start)) *
+                                    100 +
+                                  "%"
+                            }`,
+                          }}
+                          key={event.start.unix()}
+                        >
+                          <div>{event.title}</div>
+                          <div>{moment(event.start).format("LT")}</div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ))}
@@ -62,12 +142,12 @@ export const CalendarView = () => {
                   {(days) => (
                     <>
                       <div className="month-week-day--header"></div>
-                      {days.map((date: Moment) => (
+                      {days.map((day: DayData) => (
                         <div
                           className="month-week-day month-week-day--header"
-                          key={date.unix()}
+                          key={day.date.unix()}
                         >
-                          {date.format("dd")}
+                          {day.date.format("dd")}
                         </div>
                       ))}
                     </>
@@ -77,26 +157,36 @@ export const CalendarView = () => {
                   <CalendarWeek
                     key={week.start.unix()}
                     currentDate={week.start}
+                    events={events}
                   >
                     {(days) => (
                       <>
                         <div className="month-week-number">
                           {week.start.week()}.
                         </div>
-                        {days.map((date: Moment) => (
+                        {days.map((day: DayData) => (
                           <div
                             className={[
                               "month-week-day",
-                              !date.isSame(currentDate, "month") &&
+                              !day.date.isSame(currentDate, "month") &&
                                 "month-week-day--other-month",
-                              date.isSame(moment(), "day") &&
+                              day.date.isSame(moment(), "day") &&
                                 "month-week-day--current-day",
-                              [0, 6].indexOf(date.day()) >= 0 &&
+                              [0, 6].indexOf(day.date.day()) >= 0 &&
                                 "month-week-day--weekend-day",
                             ].join(" ")}
-                            key={date.unix()}
+                            key={day.date.unix()}
                           >
-                            {date.format("ll")}
+                            {day.date.format("ll")}
+                            {day.events?.map((event) => (
+                              <div
+                                className="month-week-day-event"
+                                style={{ backgroundColor: event.color }}
+                                key={event.start.unix()}
+                              >
+                                <div>{event.title}</div>
+                              </div>
+                            ))}
                           </div>
                         ))}
                       </>
@@ -110,4 +200,11 @@ export const CalendarView = () => {
       )}
     </Calendar>
   );
+};
+
+export const CalendarView = CalendarViewTemplate.bind({});
+
+CalendarView.args = {
+  startHour: 8,
+  endHour: 20,
 };

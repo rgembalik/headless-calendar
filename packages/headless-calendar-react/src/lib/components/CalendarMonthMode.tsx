@@ -7,11 +7,13 @@ export interface CalendarMonthModeProps {
 }
 
 function CalendarMonthMode({ children }: CalendarMonthModeProps) {
-  const { mode, currentDate } = useContext(CalendarContext);
+  const { mode, currentDate, events } = useContext(CalendarContext);
   return (
     <>
       {mode === CalendarMode.MONTH ? (
-        <CalendarMonth currentDate={currentDate}>{children}</CalendarMonth>
+        <CalendarMonth currentDate={currentDate} events={events}>
+          {children}
+        </CalendarMonth>
       ) : null}
     </>
   );
