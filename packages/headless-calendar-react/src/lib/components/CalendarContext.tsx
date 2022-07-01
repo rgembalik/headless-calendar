@@ -18,6 +18,7 @@ export interface CalendarEvent {
   end?: Moment;
   title?: string;
   color?: string;
+  backgroundColor?: string;
   type?: CalendarEventType;
 }
 

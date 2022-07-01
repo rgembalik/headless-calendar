@@ -14,8 +14,7 @@ body {
   border-top: 1px solid lightgray;
 }
 
-.calendar-view .month-container,
-.calendar-view .week-container {
+.calendar-view .month-container {
   border-right: 1px solid lightgray;
   border-bottom: 1px solid lightgray;
 }
@@ -75,6 +74,9 @@ body {
   height: 100%;
   min-height: 150vh;
   max-width: 930px;
+
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 
 .calendar-view .week-day {
@@ -87,11 +89,14 @@ body {
   grid-row: 1;
 }
 
+.calendar-view .week-day:last-child {
+  border-right: 1px solid lightgray;
+}
+
 .calendar-view .week-day-header {
   position: sticky;
   top: 0;
-  background-color: #7bc1ca;
-  color: white;
+  color: gray;
   height: 3em;
   display: flex;
   flex-direction: column;
@@ -115,7 +120,28 @@ body {
   min-height: fit-content;
 }
 
+.calendar-view .week-day-header + .week-hour-marker {
+  border-top: 1px solid #eee;
+}
 .calendar-view .week-hour-marker {
   border-bottom: 1px solid #eee;
   box-sizing: border-box;
+}
+
+.calendar-view .week-day-now {
+  width: 100%;
+  position: absolute;
+  border-bottom: 1px solid darkred;
+}
+
+.calendar-view .week-day-now::before {
+  content: "now";
+  color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  line-height: 0.9;
+  padding: 3px 5px;
+  background-color: darkred;
+  border-bottom-right-radius: 3px;
 }

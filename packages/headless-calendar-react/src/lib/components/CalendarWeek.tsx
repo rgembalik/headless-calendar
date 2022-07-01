@@ -48,7 +48,6 @@ function CalendarWeek({
     let date = startDay.clone().subtract(1, "day");
 
     while (date.isBefore(endDay, "day")) {
-      console.log(events);
       _days.push({
         date: date.add(1, "day").clone(),
         events: events?.filter(

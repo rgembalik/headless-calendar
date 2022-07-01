@@ -1,6 +1,6 @@
 import moment from "moment";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Calendar,
   CalendarContextData,
@@ -8,35 +8,17 @@ import {
   CalendarWeek,
   WeekData,
 } from "../../lib";
-import { CalendarEvent } from "../../lib/components/CalendarContext";
 import { DayData } from "../../lib/components/CalendarWeek";
 import "./CalendarView.css";
 import { CalendarWeekMode } from "../../lib/components/CalendarWeekMode";
-
-const events: CalendarEvent[] = [
-  {
-    start: moment().hour(9).startOf("hour"),
-    end: moment().hour(10).startOf("hour"),
-    title: "Event now",
-  },
-  {
-    start: moment().hour(13).startOf("hour"),
-    end: moment().hour(15).startOf("hour"),
-    title: "Event now2",
-    color: "darkgreen",
-  },
-  {
-    start: moment().subtract(1, "days").hour(9).minute(30),
-    end: moment().subtract(1, "days").hour(10).endOf("hour"),
-    title: "Event yesterday",
-  },
-];
+import { eventMockData } from "../data/eventData";
 
 const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
   args
 ) => {
   const [mode, setMode] = useState(CalendarMode.WEEK);
   const { startHour = 0, endHour = 24 } = args;
+  const [now, setNow] = useState(moment());
   const availableModes = useMemo(
     () =>
       [CalendarMode.MONTH, CalendarMode.WEEK].filter(
@@ -44,8 +26,14 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
       ),
     [mode]
   );
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(moment());
+    }, 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
   return (
-    <Calendar mode={mode} events={events}>
+    <Calendar mode={mode} events={eventMockData}>
       {({ prev, next, currentDate, setCurrentDate }: CalendarContextData) => (
         <div className="calendar-view">
           <p>
@@ -109,7 +97,8 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
                         <div
                           className="week-day-event"
                           style={{
-                            backgroundColor: event.color,
+                            backgroundColor: event.backgroundColor,
+                            color: event.color,
                             top: `${timeToPosition(event.start) * 100}%`,
                             height: `${
                               !event.end
@@ -126,6 +115,14 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
                           <div>{moment(event.start).format("LT")}</div>
                         </div>
                       ))}
+                      {now.isSame(day.date, "day") && (
+                        <div
+                          className="week-day-now"
+                          style={{
+                            top: `${timeToPosition(now) * 100}%`,
+                          }}
+                        ></div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -157,7 +154,7 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
                   <CalendarWeek
                     key={week.start.unix()}
                     currentDate={week.start}
-                    events={events}
+                    events={eventMockData}
                   >
                     {(days) => (
                       <>
