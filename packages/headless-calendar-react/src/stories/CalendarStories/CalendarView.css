@@ -41,8 +41,9 @@ body {
   color: lightgray;
 }
 
-.calendar-view .month-week-day--current-day {
-  background-color: rgb(232, 243, 232);
+.calendar-view .month-week-day--today,
+.calendar-view .week-day--today {
+  background-color: rgb(232, 243, 232, 0.5);
   color: darkgreen;
 }
 .calendar-view .month-week-day--header {
@@ -118,6 +119,15 @@ body {
   color: white;
   position: absolute;
   min-height: fit-content;
+  overflow: hidden;
+  border: 1px solid currentColor;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.calendar-view .week-day-event:hover {
+  z-index: 1;
 }
 
 .calendar-view .week-day-header + .week-hour-marker {
@@ -126,6 +136,11 @@ body {
 .calendar-view .week-hour-marker {
   border-bottom: 1px solid #eee;
   box-sizing: border-box;
+}
+
+.calendar-view .week-day-lines {
+  grid-column: 1 / 9;
+  grid-row: 1;
 }
 
 .calendar-view .week-day-now {

@@ -20,6 +20,10 @@ export interface CalendarEvent {
   color?: string;
   backgroundColor?: string;
   type?: CalendarEventType;
+  layoutInfo?: {
+    overlappingEventsCount: number;
+    position: number;
+  };
 }
 
 export interface CalendarContextData {

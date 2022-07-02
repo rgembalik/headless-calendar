@@ -2,8 +2,15 @@ import moment, { Moment } from "moment";
 import React, { useCallback, useMemo } from "react";
 import { CalendarEvent } from "./CalendarContext";
 
+enum DayType {
+  Today = "today",
+  OtherMonth = "other-month",
+  Weekend = "weekend",
+}
+
 export interface DayData {
   date: Moment;
+  dayTypes: DayType[];
   events?: CalendarEvent[];
 }
 
@@ -11,7 +18,9 @@ export interface WeekPropsType {
   currentDate: Moment | Date;
   children?: (
     days: DayData[],
-    timeToPosition: (time: string | Date | Moment) => number
+    hours: number[],
+    timeToPosition: (time: string | Date | Moment) => number,
+    diffToLength: (diff: number) => number
   ) => React.ReactNode;
   events?: CalendarEvent[];
   startHour?: number;
@@ -43,26 +52,99 @@ function CalendarWeek({
     [endHour, startHour]
   );
 
+  const diffTolength = useCallback(
+    (miliseconds: number): number => {
+      return miliseconds / 1000 / 60 / 60 / (endHour - startHour);
+    },
+    [endHour, startHour]
+  );
+
+  const hours = useMemo(
+    () =>
+      Array(Math.max(0, endHour - startHour))
+        .fill(0)
+        .map((_, idx) => idx + startHour),
+    [startHour, endHour]
+  );
+
   const days: DayData[] = useMemo(() => {
-    let _days = [];
-    let date = startDay.clone().subtract(1, "day");
+    const _days = [];
+    const date = startDay.clone().subtract(1, "day");
 
     while (date.isBefore(endDay, "day")) {
+      const dayTypes: DayType[] = [];
+      date.add(1, "day");
+
+      if (!date.isSame(currentDate, "month")) {
+        dayTypes.push(DayType.OtherMonth);
+      }
+      if (date.isSame(moment(), "day")) {
+        dayTypes.push(DayType.Today);
+      }
+      if ([0, 6].indexOf(date.day()) >= 0) {
+        dayTypes.push(DayType.Weekend);
+      }
+      let eventStack: (CalendarEvent | null)[] = [];
       _days.push({
-        date: date.add(1, "day").clone(),
-        events: events?.filter(
-          (event) =>
-            date.isSame(event.start, "day") ||
-            (event.end &&
-              (date.isSame(event.end, "day") ||
-                date.isBetween(event.start, event.end, "day", "[]")))
-        ),
+        date: date.clone(),
+        events: events
+          ?.filter(
+            (event) =>
+              date.isSame(event.start, "day") ||
+              (event.end &&
+                (date.isSame(event.end, "day") ||
+                  date.isBetween(event.start, event.end, "day", "[]")))
+          )
+          .map((e) => {
+            eventStack = eventStack.map((event) =>
+              event?.end?.isAfter(e.start) ? event : null
+            );
+            let slotted = false;
+            for (let i = 0; i < eventStack.length; i++) {
+              if (!eventStack[i]) {
+                eventStack[i] = e;
+                slotted = true;
+                e.layoutInfo = {
+                  overlappingEventsCount: eventStack.length - 1,
+                  position: i,
+                };
+                break;
+              }
+            }
+            if (!slotted) {
+              // if no slot was found, push to the end
+              eventStack.forEach((event) => {
+                if (event?.layoutInfo) {
+                  event.layoutInfo.overlappingEventsCount++;
+                }
+              });
+              eventStack.push(e);
+            }
+            let lastNonNull = eventStack.reduce((acc, event, idx) => {
+              if (event) return idx;
+              else return acc;
+            }, -1);
+
+            eventStack.length = lastNonNull + 1;
+            e.layoutInfo = {
+              overlappingEventsCount: eventStack.length - 1,
+              position:
+                e.layoutInfo?.position || e.layoutInfo?.position === 0
+                  ? e.layoutInfo.position
+                  : eventStack.length - 1,
+            };
+
+            return e;
+          }),
+        dayTypes,
       });
     }
     return _days;
   }, [startDay, endDay, events]);
 
-  return <>{children ? children(days, timeToPosition) : ""}</>;
+  return (
+    <>{children ? children(days, hours, timeToPosition, diffTolength) : ""}</>
+  );
 }
 
 export { CalendarWeek };

@@ -1,4 +1,4 @@
-import moment, { Moment } from "moment";
+import moment from "moment";
 import { useState } from "react";
 import {
   Calendar,
@@ -53,12 +53,10 @@ export const DatePicker = () => {
                         <button
                           className={[
                             "month-week-day",
-                            day.date.isSame(date, "day") &&
-                              "month-week-day--selected",
-                            !day.date.isSame(currentDate, "month") &&
-                              "month-week-day--other-month",
-                            day.date.isSame(moment(), "day") &&
-                              "month-week-day--current-day",
+                            ...day.dayTypes.map((t) => `month-week-day--${t}`),
+                            day.date.isSame(date, "day")
+                              ? "month-week-day--selected"
+                              : "",
                           ].join(" ")}
                           key={day.date.unix()}
                           onClick={() => setDate(day.date.toDate())}

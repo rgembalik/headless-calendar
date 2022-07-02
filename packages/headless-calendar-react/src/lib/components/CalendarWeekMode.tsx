@@ -6,7 +6,9 @@ import { CalendarWeek, DayData } from "./CalendarWeek";
 export interface CalendarWeekModeProps {
   children?: (
     days: DayData[],
-    timeToPosition: (time: string | Date | Moment) => number
+    hours: number[],
+    timeToPosition: (time: string | Date | Moment) => number,
+    diffToLength: (diff: number) => number
   ) => React.ReactNode;
   startHour?: number;
   endHour?: number;

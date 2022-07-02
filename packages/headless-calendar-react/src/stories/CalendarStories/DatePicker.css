@@ -60,7 +60,7 @@ body {
   color: lightgray;
 }
 
-.datepicker .month-week-day--current-day {
+.datepicker .month-week-day--today {
   background-color: rgb(232, 243, 232);
   color: darkgreen;
 }

@@ -53,38 +53,31 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
             <button onClick={next}>→</button>
           </p>
           <Calendar.WeekMode startHour={startHour} endHour={endHour}>
-            {(days: DayData[], timeToPosition) => (
+            {(days: DayData[], hours, timeToPosition, diffToLength) => (
               <div className="week-container">
-                <div
-                  className="week-day-lines"
-                  style={{
-                    gridColumn: `1 / 9`,
-                    gridRow: `1`,
-                  }}
-                >
+                <div className="week-day-lines">
                   <div className="week-day-header"></div>
-                  {Array(Math.max(0, endHour - startHour))
-                    .fill(0)
-                    .map((_, idx) => (
-                      <div
-                        key={startHour + idx}
-                        className="week-hour-marker"
-                        style={{
-                          height: `calc( ( 100% - 3em ) / ${
-                            endHour - startHour
-                          })`,
-                        }}
-                      >
-                        {moment()
-                          .hour(startHour + idx)
-                          .format("ha")}
-                      </div>
-                    ))}
+                  {hours.map((hour) => (
+                    <div
+                      key={hour}
+                      className="week-hour-marker"
+                      style={{
+                        height: `calc( ( 100% - 3em ) / ${
+                          endHour - startHour
+                        })`,
+                      }}
+                    >
+                      {moment().hour(hour).format("ha")}
+                    </div>
+                  ))}
                 </div>
 
                 {days.map((day: DayData, idx) => (
                   <div
-                    className="week-day"
+                    className={[
+                      "week-day",
+                      ...day.dayTypes.map((t) => `week-day--${t}`),
+                    ].join(" ")}
                     key={day.date.unix()}
                     style={{ gridColumn: `${idx + 2}` }}
                   >
@@ -100,11 +93,24 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
                             backgroundColor: event.backgroundColor,
                             color: event.color,
                             top: `${timeToPosition(event.start) * 100}%`,
+                            left: `${
+                              event.layoutInfo
+                                ? (event.layoutInfo?.position * 25) /
+                                  (event.layoutInfo?.overlappingEventsCount + 1)
+                                : "0"
+                            }%`,
+                            width: `${
+                              event.layoutInfo
+                                ? 75 +
+                                  25 /
+                                    (event.layoutInfo?.overlappingEventsCount +
+                                      1)
+                                : 100
+                            }%`,
                             height: `${
                               !event.end
                                 ? "auto"
-                                : (timeToPosition(event.end) -
-                                    timeToPosition(event.start)) *
+                                : diffToLength(event.end.diff(event.start)) *
                                     100 +
                                   "%"
                             }`,
@@ -165,12 +171,9 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
                           <div
                             className={[
                               "month-week-day",
-                              !day.date.isSame(currentDate, "month") &&
-                                "month-week-day--other-month",
-                              day.date.isSame(moment(), "day") &&
-                                "month-week-day--current-day",
-                              [0, 6].indexOf(day.date.day()) >= 0 &&
-                                "month-week-day--weekend-day",
+                              ...day.dayTypes.map(
+                                (t) => `month-week-day--${t}`
+                              ),
                             ].join(" ")}
                             key={day.date.unix()}
                           >
