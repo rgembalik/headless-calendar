@@ -38,12 +38,14 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
   }, []);
 
   const onBodyClick = useCallback((e: any) => {
-    if (e.target.classList.contains("week-day-event")) {
+    if (
+      e.target.classList.contains("week-day-event") ||
+      e.target.classList.contains("month-day-event")
+    ) {
       return;
     }
     setSelectedEvent(null);
   });
-
   useEffect(() => {
     document.body.addEventListener("click", onBodyClick);
 
@@ -176,10 +178,10 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
                 >
                   {(days) => (
                     <>
-                      <div className="month-week-day--header"></div>
+                      <div className="month-day--header"></div>
                       {days.map((day: DayData) => (
                         <div
-                          className="month-week-day month-week-day--header"
+                          className="month-day month-day--header"
                           key={day.date.unix()}
                         >
                           {day.date.format("dd")}
@@ -202,23 +204,46 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
                         {days.map((day: DayData) => (
                           <div
                             className={[
-                              "month-week-day",
-                              ...day.dayTypes.map(
-                                (t) => `month-week-day--${t}`
-                              ),
+                              "month-day",
+                              ...day.dayTypes.map((t) => `month-day--${t}`),
                             ].join(" ")}
                             key={day.date.unix()}
                           >
                             {day.date.format("ll")}
-                            {day.events?.map((event) => (
-                              <div
-                                className="month-week-day-event"
-                                style={{ backgroundColor: event.color }}
-                                key={event.start.unix()}
-                              >
-                                <div>{event.title}</div>
+                            {day.events
+                              ?.filter(
+                                (_, idx) =>
+                                  idx < 2 ||
+                                  (day.events && day.events?.length <= 3)
+                              )
+                              .map((event) => (
+                                <div
+                                  className={`month-day-event ${
+                                    selectedEvent === event
+                                      ? "month-day-event--selected"
+                                      : ""
+                                  }`}
+                                  style={{
+                                    backgroundColor: event.backgroundColor,
+                                    color: event.color,
+                                  }}
+                                  onClick={() =>
+                                    event === selectedEvent
+                                      ? setSelectedEvent(null)
+                                      : setSelectedEvent(event)
+                                  }
+                                  key={event.start.unix()}
+                                >
+                                  {event.title}
+                                </div>
+                              ))}
+                            {day.events && day.events?.length > 3 ? (
+                              <div className="month-day-more-events">
+                                {day.events?.length - 2} more
                               </div>
-                            ))}
+                            ) : (
+                              ""
+                            )}
                           </div>
                         ))}
                       </>
