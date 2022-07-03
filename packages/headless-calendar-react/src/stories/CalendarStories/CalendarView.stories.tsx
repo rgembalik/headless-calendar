@@ -12,6 +12,8 @@ import { DayData } from "../../lib/components/CalendarWeek";
 import "./CalendarView.css";
 import { CalendarWeekMode } from "../../lib/components/CalendarWeekMode";
 import { eventMockData } from "../data/eventData";
+import { CalendarEvent } from "../../lib/components/CalendarContext";
+import { useCallback } from "@storybook/addons";
 
 const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
   args
@@ -19,6 +21,8 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
   const [mode, setMode] = useState(CalendarMode.WEEK);
   const { startHour = 0, endHour = 24 } = args;
   const [now, setNow] = useState(moment());
+  const [selectedEvent, setSelectedEvent] =
+    useState<CalendarEvent | null>(null);
   const availableModes = useMemo(
     () =>
       [CalendarMode.MONTH, CalendarMode.WEEK].filter(
@@ -32,6 +36,22 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
     }, 60 * 1000);
     return () => clearInterval(interval);
   }, []);
+
+  const onBodyClick = useCallback((e: any) => {
+    if (e.target.classList.contains("week-day-event")) {
+      return;
+    }
+    setSelectedEvent(null);
+  });
+
+  useEffect(() => {
+    document.body.addEventListener("click", onBodyClick);
+
+    return function cleanup() {
+      window.removeEventListener("click", onBodyClick);
+    };
+  }, [onBodyClick]);
+
   return (
     <Calendar mode={mode} events={eventMockData}>
       {({ prev, next, currentDate, setCurrentDate }: CalendarContextData) => (
@@ -88,7 +108,16 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
                     <div className="week-day-event-container">
                       {day.events?.map((event) => (
                         <div
-                          className="week-day-event"
+                          className={`week-day-event ${
+                            selectedEvent === event
+                              ? "week-day-event--selected"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            event === selectedEvent
+                              ? setSelectedEvent(null)
+                              : setSelectedEvent(event)
+                          }
                           style={{
                             backgroundColor: event.backgroundColor,
                             color: event.color,
@@ -118,7 +147,10 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
                           key={event.start.unix()}
                         >
                           <div>{event.title}</div>
-                          <div>{moment(event.start).format("LT")}</div>
+                          <div className="week-day-event-hours">
+                            {moment(event.start).format("LT")} -{" "}
+                            {moment(event.end).format("LT")}
+                          </div>
                         </div>
                       ))}
                       {now.isSame(day.date, "day") && (
