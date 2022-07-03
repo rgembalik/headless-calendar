@@ -62,14 +62,8 @@
 import './page.css';
 import MyHeader from './Header.vue';
 import { defineComponent } from 'vue';
+import { PageState } from './types';
 
-interface User {
-  name: string;
-}
-
-interface PageState {
-  user: User | null;
-}
 
 export default defineComponent({
   name: 'my-page',

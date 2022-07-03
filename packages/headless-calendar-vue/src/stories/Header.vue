@@ -30,21 +30,15 @@
   </header>
 </template>
 
-<script>
+<script setup lang="ts">
 import './header.css';
 import MyButton from './Button.vue';
+import { User } from './types';
+const { user } = defineProps<{ user: User | null }>();
+defineEmits<{
+  (e: 'login'): void
+  (e: 'logout'): void
+  (e: 'createAccount'): void
+}>()
 
-export default {
-  name: 'my-header',
-
-  components: { MyButton },
-
-  props: {
-    user: {
-      type: Object,
-    },
-  },
-
-  emits: ['login', 'logout', 'createAccount'],
-};
 </script>
