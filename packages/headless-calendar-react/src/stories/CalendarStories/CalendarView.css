@@ -5,7 +5,6 @@ body {
 .calendar-view .month-container {
   display: grid;
   grid-template-columns: 0.25fr repeat(7, 1fr);
-  max-width: 930px;
 }
 
 .calendar-view .month-week-day,
@@ -74,7 +73,6 @@ body {
   grid-template-columns: 50px repeat(7, 1fr);
   height: 100%;
   min-height: 150vh;
-  max-width: 930px;
 
   border-top: 1px solid lightgray;
   border-bottom: 1px solid lightgray;
@@ -165,7 +163,7 @@ body {
 }
 
 .calendar-view .week-day-now::before {
-  content: "now";
+  /* content: "now"; */
   color: white;
   position: absolute;
   top: 0;

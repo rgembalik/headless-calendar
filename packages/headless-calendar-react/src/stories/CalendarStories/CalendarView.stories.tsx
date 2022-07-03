@@ -102,8 +102,8 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
                     style={{ gridColumn: `${idx + 2}` }}
                   >
                     <div className="week-day-header">
-                      <div>{day.date.format("dddd")}</div>
-                      <div>{day.date.format("ll")}</div>
+                      <div>{day.date.format("dd")}</div>
+                      <strong>{day.date.format("D, MMM")}</strong>
                     </div>
                     <div className="week-day-event-container">
                       {day.events?.map((event) => (
