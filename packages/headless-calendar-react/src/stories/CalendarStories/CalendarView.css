@@ -115,7 +115,6 @@ body {
 .calendar-view .week-day-event-container {
   position: relative;
   height: calc(100% - 3em);
-  overflow: hidden;
 }
 .calendar-view .week-day-event {
   text-align: left;
@@ -124,6 +123,9 @@ body {
   cursor: pointer;
   min-height: fit-content;
   position: absolute;
+
+  left: 5px;
+  width: calc(100% - 10px);
 }
 
 .calendar-view .week-day-event-hours {

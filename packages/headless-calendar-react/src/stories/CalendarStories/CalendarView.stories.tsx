@@ -124,20 +124,20 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
                             backgroundColor: event.backgroundColor,
                             color: event.color,
                             top: `${timeToPosition(event.start) * 100}%`,
-                            left: `${
+                            left: `calc(5px + ${
                               event.layoutInfo
                                 ? (event.layoutInfo?.position * 25) /
                                   (event.layoutInfo?.overlappingEventsCount + 1)
                                 : "0"
-                            }%`,
-                            width: `${
+                            }%)`,
+                            width: `calc(${
                               event.layoutInfo
                                 ? 75 +
                                   25 /
                                     (event.layoutInfo?.overlappingEventsCount +
                                       1)
                                 : 100
-                            }%`,
+                            }% - 10px)`,
                             height: `${
                               !event.end
                                 ? "auto"
