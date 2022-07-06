@@ -126,6 +126,8 @@ body {
 
   left: 5px;
   width: calc(100% - 10px);
+
+  border-left: 3px solid currentColor;
 }
 
 .calendar-view .week-day-event-hours {

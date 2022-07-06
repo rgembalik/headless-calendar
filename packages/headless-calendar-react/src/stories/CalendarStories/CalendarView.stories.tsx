@@ -138,13 +138,13 @@ const CalendarViewTemplate: ComponentStory<typeof CalendarWeekMode> = (
                                       1)
                                 : 100
                             }% - 10px)`,
-                            height: `${
+                            height: `calc(${
                               !event.end
                                 ? "auto"
                                 : diffToLength(event.end.diff(event.start)) *
                                     100 +
                                   "%"
-                            }`,
+                            } - 3px)`,
                           }}
                           key={event.start.unix()}
                         >

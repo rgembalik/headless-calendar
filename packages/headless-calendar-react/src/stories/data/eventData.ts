@@ -52,6 +52,27 @@ const eventMockData: CalendarEvent[] = [
     backgroundColor: colorPalette[2].background,
     color: colorPalette[2].foreground,
   },
+  {
+    start: moment().subtract(1, "days").hour(9).minute(45),
+    end: moment().subtract(1, "days").hour(11).minute(15),
+    title: "Event yesterday 2",
+    backgroundColor: colorPalette[1].background,
+    color: colorPalette[1].foreground,
+  },
+  {
+    start: moment().subtract(1, "days").hour(10).minute(45),
+    end: moment().subtract(1, "days").hour(11).endOf("hour"),
+    title: "Event yesterday 3",
+    backgroundColor: colorPalette[0].background,
+    color: colorPalette[0].foreground,
+  },
+  {
+    start: moment().subtract(1, "days").hour(11).minute(30),
+    end: moment().subtract(1, "days").hour(12).endOf("hour"),
+    title: "Event yesterday 4",
+    backgroundColor: colorPalette[2].background,
+    color: colorPalette[2].foreground,
+  },
 ];
 
 export { eventMockData, colorPalette };

@@ -95,29 +95,29 @@ function CalendarWeek({
                 (date.isSame(event.end, "day") ||
                   date.isBetween(event.start, event.end, "day", "[]")))
           )
+          .map((e) => ({ ...e }))
           .map((e) => {
-            eventStack = eventStack.map((event) =>
-              event?.end?.isAfter(e.start) ? event : null
-            );
-            let slotted = false;
-            for (let i = 0; i < eventStack.length; i++) {
-              if (!eventStack[i]) {
-                eventStack[i] = e;
-                slotted = true;
+            let eventPosition = -1;
+            eventStack = eventStack.map((event, posIdx) => {
+              const slotEvent = event?.end?.isAfter(e.start) ? event : null;
+              if (!slotEvent && eventPosition === -1) {
+                eventPosition = posIdx;
                 e.layoutInfo = {
                   overlappingEventsCount: eventStack.length - 1,
-                  position: i,
+                  position: eventPosition,
                 };
-                break;
               }
-            }
-            if (!slotted) {
+              return slotEvent;
+            });
+
+            if (eventPosition === -1) {
               // if no slot was found, push to the end
               eventStack.forEach((event) => {
                 if (event?.layoutInfo) {
                   event.layoutInfo.overlappingEventsCount++;
                 }
               });
+              eventPosition = eventStack.length;
               eventStack.push(e);
             }
             let lastNonNull = eventStack.reduce((acc, event, idx) => {
@@ -126,12 +126,10 @@ function CalendarWeek({
             }, -1);
 
             eventStack.length = lastNonNull + 1;
+
             e.layoutInfo = {
               overlappingEventsCount: eventStack.length - 1,
-              position:
-                e.layoutInfo?.position || e.layoutInfo?.position === 0
-                  ? e.layoutInfo.position
-                  : eventStack.length - 1,
+              position: eventPosition,
             };
 
             return e;
